@@ -167,7 +167,5 @@ dist-ssr
 *.sln
 *.sw?
 
-
-public/.DS_Store
-public/favicon_io.zip
-public/favicon_io/
+# Production build
+build
