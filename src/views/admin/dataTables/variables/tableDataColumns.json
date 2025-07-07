@@ -1,0 +1,18 @@
+[
+  {
+    "movimiento": "Ingreso",
+    "fecha": "12.Mar.2025",
+    "montoUSD": 1043.03,
+    "cuotapartes": 200,
+    "precioCuota": 5.22,
+    "pyl": 1043.03
+  },
+  {
+    "movimiento": "Ingreso",
+    "fecha": "21.Jun.2025",
+    "montoUSD": 695.36,
+    "cuotapartes": 100,
+    "precioCuota": 6.95,
+    "pyl": 69.54
+  }
+]
