@@ -124,8 +124,9 @@ export default function UserReports() {
   // Calculate profits: current balance - total invested
   const profits = currentBalance - totalInvested;
 
-  // Apply 15% commission to profits
-  const profitsAfterCommission = profits * 0.85; // 100% - 15% = 85%
+  // Apply 15% commission to profits using the correct formula: ((Cantidad cuotas * Ultimo valor Cuota) - Monto USD Total) * 0.15
+  const commission = profits * 0.15;
+  const profitsAfterCommission = profits - commission;
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
@@ -223,7 +224,7 @@ export default function UserReports() {
         )}
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
           <PieCard />
-          <InvestmentSummary userCuotapartes={userCuotapartes} />
+          <InvestmentSummary userCuotapartes={userCuotapartes} totalInvested={totalInvested} />
         </SimpleGrid>
       </SimpleGrid>
     </Box>

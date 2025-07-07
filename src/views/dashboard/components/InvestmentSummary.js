@@ -3,7 +3,7 @@ import Card from "components/card/Card";
 import React from "react";
 import { useCuotaparteData } from "hooks/useCuotaparteData";
 
-export default function InvestmentSummary({ userCuotapartes = 0 }) {
+export default function InvestmentSummary({ userCuotapartes = 0, totalInvested = 0 }) {
   const bg = useColorModeValue("white", "navy.800");
   const titleColor = useColorModeValue("secondaryGray.900", "white");
   const subtitleColor = useColorModeValue("secondaryGray.700", "secondaryGray.400");
@@ -16,8 +16,8 @@ export default function InvestmentSummary({ userCuotapartes = 0 }) {
   // Calcular valor bruto
   const valorBruto = userCuotapartes * currentValorCuota;
 
-  // Calcular comisiones (15% del valor bruto)
-  const comisiones = valorBruto * 0.15;
+  // Calcular comisiones según la fórmula correcta: ((Cantidad cuotas * Ultimo valor Cuota) - Monto USD Total) * 0.15
+  const comisiones = (valorBruto - totalInvested) * 0.15;
 
   // Calcular valor neto
   const valorNeto = valorBruto - comisiones;
