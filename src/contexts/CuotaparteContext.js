@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { collection, query, orderBy, getDocs, limit } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -13,7 +13,7 @@ export function CuotaparteProvider({ children }) {
   // Cache duration: 5 minutes
   const CACHE_DURATION = 5 * 60 * 1000;
 
-  const fetchCuotapartes = async (forceRefresh = false) => {
+  const fetchCuotapartes = useCallback(async (forceRefresh = false) => {
     // Check if we have cached data and it's still valid
     if (!forceRefresh && cuotapartes.length > 0 && lastFetch && (Date.now() - lastFetch) < CACHE_DURATION) {
       return cuotapartes;
@@ -76,7 +76,7 @@ export function CuotaparteProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [cuotapartes, lastFetch, CACHE_DURATION]);
 
   const getMonthlyProfits = () => {
     if (cuotapartes.length === 0) return [];
@@ -133,7 +133,7 @@ export function CuotaparteProvider({ children }) {
   // Auto-fetch on mount
   useEffect(() => {
     fetchCuotapartes();
-  }, []);
+  }, [fetchCuotapartes]);
 
   const value = {
     cuotapartes,

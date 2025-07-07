@@ -22,7 +22,6 @@ import {
   MdOutlineFolder
 } from "react-icons/md";
 import PieCard from "views/dashboard/components/PieCard";
-import AccumulatedPerformance from "views/dashboard/components/AccumulatedPerformance";
 import MonthlyRevenue from "views/dashboard/components/MonthlyRevenue";
 import InvestmentSummary from "views/dashboard/components/InvestmentSummary";
 import ColumnsTable from "views/admin/dataTables/components/ColumnsTable";
@@ -45,7 +44,6 @@ export default function UserReports() {
   const { 
     currentValorCuota, 
     averageAnnualReturn, 
-    totalPatrimonio,
     monthlyTrend 
   } = useCuotaparteData();
 

@@ -48,7 +48,7 @@ export const useCuotaparteData = () => {
   const totalPatrimonio = useMemo(() => {
     if (cuotapartes.length === 0) return 0;
     return latestCuotaparte?.patrimonioTotal || 0;
-  }, [latestCuotaparte]);
+  }, [latestCuotaparte, cuotapartes.length]);
 
   const monthlyTrend = useMemo(() => {
     if (cuotapartes.length === 0) return 0;

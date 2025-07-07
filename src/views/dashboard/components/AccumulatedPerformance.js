@@ -11,73 +11,16 @@ import Card from "components/card/Card.js";
 import LineChart from "components/charts/LineChart";
 import React from "react";
 import { IoCheckmarkCircle } from "react-icons/io5";
-import { RiArrowUpSFill } from "react-icons/ri";
 import { useUserTransactions } from "hooks/useUserTransactions";
 import { useCuotaparteData } from "hooks/useCuotaparteData";
 
-// MOCK profits por mes
+// MOCK profits por mes - keeping for potential future use
+// eslint-disable-next-line no-unused-vars
 const profitsData = [99.15, 127.03, 117.74, 154.92, 145.63, 164.40, 185.91, 217.88, 247.87, 278.86];
+// eslint-disable-next-line no-unused-vars
 const profitsMonths = ["Sep", "Oct", "Nov", "Dic", "Ene", "Feb", "Mar", "Abr", "May"];
-const totalProfits = profitsData.reduce((a, b) => a + b, 0);
 
-const lineChartDataProfits = [
-  {
-    name: "Ganancias",
-    data: profitsData,
-  },
-];
-const lineChartOptionsProfits = {
-  chart: {
-    toolbar: {
-      show: true,
-      tools: {
-        zoom: true,
-        zoomin: true,
-        zoomout: true,
-        reset: true,
-        pan: false,
-      },
-    },
-    zoom: {
-      enabled: true,
-      type: 'x',
-      autoScaleYaxis: true,
-    },
-  },
-  colors: ["#22c55e"],
-  xaxis: {
-    categories: profitsMonths,
-    labels: {
-      style: {
-        colors: "#A3AED0",
-        fontSize: "14px",
-        fontWeight: "500",
-      },
-    },
-    axisBorder: { show: false },
-    axisTicks: { show: false },
-  },
-  yaxis: {
-    labels: {
-      style: {
-        colors: "#A3AED0",
-        fontSize: "14px",
-        fontWeight: "500",
-      },
-    },
-  },
-  grid: {
-    borderColor: "rgba(163, 174, 208, 0.3)",
-    show: true,
-    yaxis: { lines: { show: true, opacity: 0.5 } },
-    row: { opacity: 0.5 },
-    xaxis: { lines: { show: false } },
-  },
-  dataLabels: { enabled: false },
-  stroke: { curve: "smooth", type: "line" },
-  legend: { show: false },
-  tooltip: { theme: "dark" },
-};
+
 
 export default function AccumulatedPerformance(props) {
   const { ...rest } = props;
