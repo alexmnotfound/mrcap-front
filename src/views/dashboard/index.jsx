@@ -29,6 +29,7 @@ import { columnsDataColumns } from "views/admin/dataTables/variables/columnsData
 import ImpersonateTest from "views/dashboard/components/ImpersonateTest";
 import { useAuth } from "contexts/AuthContext";
 import { useCuotaparteData } from "hooks/useCuotaparteData";
+import { useUserTransactions } from "hooks/useUserTransactions";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 
@@ -44,8 +45,10 @@ export default function UserReports() {
   const { 
     currentValorCuota, 
     averageAnnualReturn, 
-    monthlyTrend 
+    monthlyTrend,
+    loading: loadingCuotaparte
   } = useCuotaparteData();
+  const { loading: loadingTransacciones } = useUserTransactions();
 
   // Leer transacciones de Firestore
   useEffect(() => {
@@ -130,6 +133,20 @@ export default function UserReports() {
 
   // Calculate net balance (value after commission)
   const netBalance = currentBalance - commission;
+
+  if (loading || loadingCuotaparte || loadingTransacciones) {
+    return (
+      <Center h="400px">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+      </Center>
+    );
+  }
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>

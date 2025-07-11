@@ -17,16 +17,15 @@ export default function MonthlyRevenue(props) {
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const { getMonthlyProfits, loading } = useCuotaparte();
 
+  // Hooks siempre al principio
   const chartData = useMemo(() => {
     const monthlyData = getMonthlyProfits();
-    
     if (monthlyData.length === 0) {
       return [{
         name: "Ganancia %",
         data: []
       }];
     }
-
     return [{
       name: "Ganancia %",
       data: monthlyData.map(item => item.delta)
@@ -35,7 +34,6 @@ export default function MonthlyRevenue(props) {
 
   const chartOptions = useMemo(() => {
     const monthlyData = getMonthlyProfits();
-    
     return {
       chart: {
         type: 'bar',
@@ -99,6 +97,7 @@ export default function MonthlyRevenue(props) {
     };
   }, [getMonthlyProfits]);
 
+  // Ahora el return condicional
   if (loading) {
     return (
       <Card align='center' direction='column' w='100%' {...rest}>

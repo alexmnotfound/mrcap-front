@@ -11,7 +11,10 @@ export default function InvestmentSummary({ userCuotapartes = 0, totalInvested =
   const dividerColor = useColorModeValue("gray.200", "whiteAlpha.200");
 
   // Obtener datos del contexto
-  const { currentValorCuota } = useCuotaparteData();
+  const { currentValorCuota, loading: loadingCuotaparte } = useCuotaparteData();
+  if (loadingCuotaparte || currentValorCuota === undefined || currentValorCuota === null) {
+    return <div style={{textAlign: 'center', padding: '2rem'}}><span>Cargando...</span></div>;
+  }
 
   // Calcular valor bruto
   const valorBruto = userCuotapartes * currentValorCuota;
