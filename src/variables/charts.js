@@ -139,7 +139,13 @@ export const pieChartOptions = {
   tooltip: {
     enabled: true,
     theme: "dark",
+    y: {
+      formatter: function (value) {
+        return `${value}%`;
+      },
+    },
   },
+  
 };
 
 export const pieChartData = [10, 20, 20, 20, 30];
