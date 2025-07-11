@@ -26,7 +26,7 @@ export default function Conversion(props) {
         w='100%'
         mb='0px'
         {...rest}>
-        <Text color={textColor} fontSize='xl' fontWeight='700' mb='4'>
+        <Text color={textColor} fontWeight="700" fontSize="2xl" mb={2} textAlign="center">
           Distribución de Activos
         </Text>
       </Flex>
