@@ -128,6 +128,9 @@ export default function UserReports() {
   const commission = profits * 0.15;
   const profitsAfterCommission = profits - commission;
 
+  // Calculate net balance (value after commission)
+  const netBalance = currentBalance - commission;
+
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       {currentUser?.role === "admin" && <ImpersonateTest />}
@@ -158,7 +161,7 @@ export default function UserReports() {
             </Flex>
           }
           name='Balance'
-          value={`$${currentBalance.toFixed(2)}`}
+          value={`$${netBalance.toFixed(2)}`}
         />
         <MiniStatistics
           startContent={
