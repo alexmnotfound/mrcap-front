@@ -28,7 +28,7 @@ export default function PieCard(props) {
   ];
 
   return (
-    <Card p="20px" align="center" direction="column" w="100%" {...rest}>
+    <Card w="100%" p={{ base: 4, md: 8 }} borderRadius="24px" align="center" direction="column" {...rest}>
       {/* Title Section */}
       <Flex direction="column" w="100%" mb="20px">
         <Text color={textColor} fontWeight="700" fontSize="2xl" mb={2} textAlign="center">
