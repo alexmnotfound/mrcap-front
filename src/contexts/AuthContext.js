@@ -11,7 +11,8 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { Spinner, Center } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
+import logo from "assets/img/layout/logoWhite.png";
 
 const AuthContext = createContext();
 
@@ -90,18 +91,17 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ currentUser, login, logout, register, loginWithGoogle, loading }}>
-      {loading && (
-        <Center minH="100vh" w="100vw">
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="5xl"
+      {loading ? (
+        <Center h="100vh" w="100vw" bg="#f7fafd">
+          <img
+            src={logo}
+            alt="MR Capitals"
+            style={{ width: 100, height: 100, objectFit: "contain" }}
           />
         </Center>
+      ) : (
+        children
       )}
-      {!loading && children}
     </AuthContext.Provider>
   );
 }
