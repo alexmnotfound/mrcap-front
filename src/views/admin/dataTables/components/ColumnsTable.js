@@ -91,7 +91,7 @@ export default function ColumnTable(props) {
       ),
       cell: (info) => (
         <Text color={textColor} fontSize="sm" fontWeight="700">
-          ${info.getValue().toLocaleString()}
+          ${info.getValue().toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </Text>
       ),
     }),
@@ -127,7 +127,7 @@ export default function ColumnTable(props) {
       ),
       cell: (info) => (
         <Text color={textColor} fontSize="sm" fontWeight="700">
-          ${info.getValue().toLocaleString()}
+          ${info.getValue().toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </Text>
       ),
     }),
@@ -153,7 +153,7 @@ export default function ColumnTable(props) {
             fontSize="sm"
             fontWeight="700"
           >
-            ${pnl.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ${pnl.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </Text>
         );
       },

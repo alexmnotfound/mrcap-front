@@ -156,11 +156,11 @@ export default function UserReports() {
         gap='20px'
         mb='20px'>
         <MiniStatistics 
-          growth={`${monthlyTrend >= 0 ? '+' : ''}${monthlyTrend.toFixed(2)}%`} 
+          growth={`${monthlyTrend >= 0 ? '+' : ''}${monthlyTrend.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`} 
           name='Ganancias' 
-          value={`$${profitsAfterCommission.toFixed(2)}`} 
+          value={`$${profitsAfterCommission.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} 
         />
-        <MiniStatistics name='Total Invertido' value={`$${totalInvested.toFixed(2)}`} />
+        <MiniStatistics name='Total Invertido' value={`$${totalInvested.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} />
         <MiniStatistics
           endContent={
             <Flex me='-16px' mt='10px'>
@@ -178,7 +178,7 @@ export default function UserReports() {
             </Flex>
           }
           name='Balance'
-          value={`$${netBalance.toFixed(2)}`}
+          value={`$${netBalance.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
         />
         <MiniStatistics
           startContent={
@@ -192,7 +192,7 @@ export default function UserReports() {
             />
           }
           name='Cuotapartes'
-          value={userCuotapartes.toFixed(2)}
+          value={userCuotapartes.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         />
         <MiniStatistics
           startContent={
@@ -206,7 +206,7 @@ export default function UserReports() {
             />
           }
           name='Valor Cuota'
-          value={`$${currentValorCuota.toFixed(2)}`}
+          value={`$${currentValorCuota.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
         />
         <MiniStatistics
           startContent={
@@ -220,7 +220,7 @@ export default function UserReports() {
             />
           }
           name='Promedio Mensual Fondo (12 meses)'
-          value={`${averageAnnualReturn.toFixed(2)}%`}
+          value={`${averageAnnualReturn.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`}
         />
       </SimpleGrid>
 

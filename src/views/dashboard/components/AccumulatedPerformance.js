@@ -71,7 +71,7 @@ export default function AccumulatedPerformance(props) {
         // Limitar a 1000% para evitar outliers visuales
         if (pct > 1000) pct = 1000;
         if (pct < -100) pct = -100;
-        accumulatedReturns.push(Number(pct.toFixed(2)));
+        accumulatedReturns.push(Number(pct.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })));
       }
     });
     return { months, accumulatedReturns };
@@ -93,7 +93,7 @@ export default function AccumulatedPerformance(props) {
   const lineChartData = [
     {
       name: "Rendimiento Acumulado",
-      data: chartReturns.map(v => Number(v.toFixed(2))),
+      data: chartReturns.map(v => Number(v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))),
     },
   ];
   const lineChartOptions = {
@@ -171,7 +171,7 @@ export default function AccumulatedPerformance(props) {
             textAlign='start'
             fontWeight='700'
             lineHeight='100%'>
-            {accumulatedReturns.length > 0 ? `${accumulatedReturns[accumulatedReturns.length - 1].toFixed(2)}%` : '--'}
+            {accumulatedReturns.length > 0 ? `${accumulatedReturns[accumulatedReturns.length - 1].toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%` : '--'}
           </Text>
           <Flex align='center' mb='20px'>
             <Text

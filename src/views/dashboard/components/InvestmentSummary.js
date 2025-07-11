@@ -34,20 +34,20 @@ export default function InvestmentSummary({ userCuotapartes = 0, totalInvested =
       <Flex direction="column" gap={3}>
         <Flex justify="space-between">
           <Text color={subtitleColor} fontWeight="500">Cuotas</Text>
-          <Text color={valueColor}>{userCuotapartes.toFixed(2)}</Text>
+          <Text color={valueColor}>{userCuotapartes.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
         </Flex>
         <Flex justify="space-between">
           <Text color={subtitleColor} fontWeight="500">Valor Bruto</Text>
-          <Text color={valueColor}>${valorBruto.toFixed(2)}</Text>
+          <Text color={valueColor}>${valorBruto.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
         </Flex>
         <Flex justify="space-between">
           <Text color={subtitleColor} fontWeight="500">Comisiones</Text>
-          <Text color={valueColor}>${comisiones.toFixed(2)}</Text>
+          <Text color={valueColor}>${comisiones.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
         </Flex>
         <Divider my={2} borderColor={dividerColor} />
         <Flex justify="space-between">
           <Text color={titleColor} fontWeight="700">Valor Neto</Text>
-          <Text color={titleColor} fontWeight="700">${valorNeto.toFixed(2)}</Text>
+          <Text color={titleColor} fontWeight="700">${valorNeto.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
         </Flex>
       </Flex>
     </Card>

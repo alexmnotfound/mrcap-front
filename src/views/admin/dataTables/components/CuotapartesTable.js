@@ -69,7 +69,7 @@ export default function CuotapartesTable({ tableData, loading }) {
       ),
       cell: (info) => (
         <Text color={textColor} fontSize="sm" fontWeight="700">
-          ${info.getValue().toLocaleString()}
+          ${info.getValue().toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </Text>
       ),
     }),
@@ -96,7 +96,7 @@ export default function CuotapartesTable({ tableData, loading }) {
             fontSize="sm" 
             fontWeight="700"
           >
-            {isPositive ? '+' : ''}{value}%
+            {isPositive ? '+' : ''}{value.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
           </Text>
         );
       },
@@ -115,7 +115,7 @@ export default function CuotapartesTable({ tableData, loading }) {
       ),
       cell: (info) => (
         <Text color={textColor} fontSize="sm" fontWeight="700">
-          ${info.getValue().toLocaleString()}
+          ${info.getValue().toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </Text>
       ),
     }),

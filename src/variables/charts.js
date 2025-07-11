@@ -279,7 +279,7 @@ export const barChartOptionsMonthlyProfits = {
         fontSize: "14px",
         fontWeight: "700",
       },
-      formatter: (val) => `${val.toFixed(2)}%`,
+      formatter: (val) => `${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`,
     },
   },
   grid: {
@@ -291,7 +291,7 @@ export const barChartOptionsMonthlyProfits = {
   },
   dataLabels: {
     enabled: true,
-    formatter: (val) => `${val.toFixed(2)}%`,
+    formatter: (val) => `${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`,
     style: {
       fontSize: '14px',
       fontWeight: '700',
@@ -309,7 +309,7 @@ export const barChartOptionsMonthlyProfits = {
   tooltip: {
     enabled: true,
     y: {
-      formatter: (val) => `${val.toFixed(2)}%`,
+      formatter: (val) => `${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`,
     },
     theme: "dark",
   },

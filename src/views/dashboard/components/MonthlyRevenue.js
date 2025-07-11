@@ -59,7 +59,7 @@ export default function MonthlyRevenue(props) {
             fontSize: "14px",
             fontWeight: "700",
           },
-          formatter: (val) => `${val.toFixed(2)}%`,
+          formatter: (val) => `${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`,
         },
       },
       grid: {
@@ -71,7 +71,7 @@ export default function MonthlyRevenue(props) {
       },
       dataLabels: {
         enabled: true,
-        formatter: (val) => `${val.toFixed(2)}%`,
+        formatter: (val) => `${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`,
         style: {
           fontSize: '14px',
           fontWeight: '700',
@@ -89,7 +89,7 @@ export default function MonthlyRevenue(props) {
       tooltip: {
         enabled: true,
         y: {
-          formatter: (val) => `${val.toFixed(2)}%`,
+          formatter: (val) => `${val.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`,
         },
         theme: "dark",
       },
