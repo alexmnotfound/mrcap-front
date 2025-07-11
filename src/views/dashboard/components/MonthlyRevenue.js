@@ -77,7 +77,7 @@ export default function MonthlyRevenue(props) {
         style: {
           fontSize: '14px',
           fontWeight: '700',
-          colors: ["#22c55e"]
+          colors: ["#fff"]
         }
       },
       plotOptions: {
@@ -109,7 +109,7 @@ export default function MonthlyRevenue(props) {
             fontSize='xl'
             fontWeight='700'
             lineHeight='100%'>
-            Rendimientos Mensuales
+            Rendimientos Mensuales FCI
           </Text>
         </Flex>
         <Center h='260px'>
@@ -134,7 +134,7 @@ export default function MonthlyRevenue(props) {
           fontSize='xl'
           fontWeight='700'
           lineHeight='100%'>
-          Rendimientos Mensuales
+          Rendimientos Mensuales FCI
         </Text>
       </Flex>
       <Box h='260px' mt='auto'>
