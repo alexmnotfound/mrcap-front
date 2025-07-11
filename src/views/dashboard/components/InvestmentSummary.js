@@ -27,7 +27,7 @@ export default function InvestmentSummary({ userCuotapartes = 0, totalInvested =
 
   return (
     <Card w="100%" p={{ base: 4, md: 8 }} borderRadius="24px" bg={bg} minH="100%">
-      <Text color={titleColor} fontWeight="700" fontSize="2xl" mb={2} textAlign="left">
+      <Text color={titleColor} fontWeight="700" fontSize="2xl" mb={2} textAlign="center">
         Inversión
       </Text>
       <Divider mb={4} borderColor={dividerColor} />
