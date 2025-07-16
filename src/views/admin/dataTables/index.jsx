@@ -8,7 +8,7 @@ import React from "react";
 import { useCuotaparte } from "contexts/CuotaparteContext";
 
 export default function Settings() {
-  const { cuotapartes, loadingCuotapartes } = useCuotaparte();
+  const { cuotapartes, loading } = useCuotaparte();
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
@@ -18,7 +18,7 @@ export default function Settings() {
         spacing={{ base: "20px", xl: "20px" }}>
         <CuotapartesTable 
           tableData={cuotapartes} 
-          loading={loadingCuotapartes} 
+          loading={loading} 
         />
       </SimpleGrid>
       

@@ -24,6 +24,7 @@ import {
 import PieCard from "views/dashboard/components/PieCard";
 import MonthlyRevenue from "views/dashboard/components/MonthlyRevenue";
 import InvestmentSummary from "views/dashboard/components/InvestmentSummary";
+import AccumulatedPerformance from "views/dashboard/components/AccumulatedPerformance";
 import ColumnsTable from "views/admin/dataTables/components/ColumnsTable";
 import { columnsDataColumns } from "views/admin/dataTables/variables/columnsData";
 import ImpersonateTest from "views/dashboard/components/ImpersonateTest";
@@ -225,7 +226,7 @@ export default function UserReports() {
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px' mb='20px'>
-        {/* <AccumulatedPerformance /> */}
+        <AccumulatedPerformance />
         <MonthlyRevenue />
       </SimpleGrid>
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>

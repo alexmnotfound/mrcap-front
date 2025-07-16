@@ -27,44 +27,87 @@ export function CuotaparteProvider({ children }) {
       const q = query(cuotapartesRef, orderBy("fecha", "desc"), limit(50));
       const querySnapshot = await getDocs(q);
       
+      console.log('=== DATOS CRUDOS DE FIREBASE ===');
+      querySnapshot.docs.forEach((doc, index) => {
+        const data = doc.data();
+        console.log(`Documento ${index + 1}:`, {
+          id: doc.id,
+          fecha: data.fecha,
+          fechaTipo: typeof data.fecha,
+          tieneToDate: data.fecha?.toDate ? 'SÍ' : 'NO',
+          valor: data.valor,
+          delta: data.delta,
+          patrimonioTotal: data.patrimonioTotal
+        });
+      });
+      
+      console.log(`Total documentos de Firebase: ${querySnapshot.docs.length}`);
+      
       const cuotapartesData = querySnapshot.docs.map(doc => {
         const data = doc.data();
-        
         // Formatear fecha
         let fechaFormateada = "N/A";
+        let fechaObj;
+        const meses = {
+          'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+          'jul': 6, 'ago': 7, 'sept': 8, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+        };
         if (data.fecha) {
           if (data.fecha.toDate) {
             // Es un Firestore Timestamp
-            const date = data.fecha.toDate();
-            fechaFormateada = date.toLocaleDateString('es-ES', {
+            fechaObj = data.fecha.toDate();
+            fechaFormateada = fechaObj.toLocaleDateString('es-ES', {
               day: '2-digit',
               month: 'short',
               year: 'numeric'
             });
           } else if (typeof data.fecha === 'string') {
-            // Ya es un string
+            // Parsear string tipo '31 mar 2024'
+            const partes = data.fecha.split(' ');
+            if (partes.length === 3) {
+              const [dia, mesStr, anio] = partes;
+              const mes = meses[mesStr.toLowerCase()];
+              fechaObj = new Date(anio, mes, dia);
+              fechaFormateada = fechaObj.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+              });
+            } else {
+              fechaObj = new Date(data.fecha);
+              fechaFormateada = data.fecha;
+            }
+          } else {
+            fechaObj = new Date(data.fecha);
             fechaFormateada = data.fecha;
           }
         }
-
         // Parsear delta (puede venir como string con %)
         let deltaValue = 0;
         if (typeof data.delta === 'string') {
+          // Si viene como "0.44%", mantener como 0.44 (porcentaje completo)
           deltaValue = parseFloat(data.delta.replace('%', '').replace(',', '.'));
         } else if (typeof data.delta === 'number') {
           deltaValue = data.delta;
         }
-        
         return {
           id: doc.id,
           fecha: fechaFormateada,
           fechaOriginal: data.fecha,
+          fechaObj,
           valor: Number(data.valor) || 0,
           delta: deltaValue,
           patrimonioTotal: Number(data.patrimonioTotal) || 0,
           comentarios: data.comentarios || ''
         };
       });
+      
+      console.log(`Total documentos procesados: ${cuotapartesData.length}`);
+      console.log('Documentos procesados:', cuotapartesData.map(item => ({
+        id: item.id,
+        fecha: item.fecha,
+        delta: item.delta
+      })));
       
       setCuotapartes(cuotapartesData);
       setLastFetch(Date.now());
@@ -80,42 +123,58 @@ export function CuotaparteProvider({ children }) {
 
   const getMonthlyProfits = () => {
     if (cuotapartes.length === 0) return [];
-
     // Group by month and calculate average delta for each month
     const monthlyData = {};
-    
+    const meses = {
+      'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+      'jul': 6, 'ago': 7, 'sept': 8, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+    };
     cuotapartes.forEach(cuotaparte => {
+      let date;
       if (cuotaparte.fechaOriginal) {
-        let date;
         if (cuotaparte.fechaOriginal.toDate) {
           date = cuotaparte.fechaOriginal.toDate();
         } else if (typeof cuotaparte.fechaOriginal === 'string') {
-          date = new Date(cuotaparte.fechaOriginal);
+          const partes = cuotaparte.fechaOriginal.split(' ');
+          if (partes.length === 3) {
+            const [dia, mesStr, anio] = partes;
+            const mes = meses[mesStr.toLowerCase()];
+            date = new Date(anio, mes, dia);
+          } else {
+            date = new Date(cuotaparte.fechaOriginal);
+          }
         } else {
-          return; // Skip if we can't parse the date
+          date = new Date(cuotaparte.fechaOriginal);
         }
-
-        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-        const monthName = date.toLocaleDateString('es-ES', { month: 'long' });
-        
-        if (!monthlyData[monthKey]) {
-          monthlyData[monthKey] = {
-            month: monthName,
-            deltas: [],
-            count: 0
-          };
+      } else if (cuotaparte.fecha) {
+        // Fallback por si acaso
+        const partes = cuotaparte.fecha.split(' ');
+        if (partes.length === 3) {
+          const [dia, mesStr, anio] = partes;
+          const mes = meses[mesStr.toLowerCase()];
+          date = new Date(anio, mes, dia);
+        } else {
+          date = new Date(cuotaparte.fecha);
         }
-        
-        monthlyData[monthKey].deltas.push(cuotaparte.delta);
-        monthlyData[monthKey].count++;
+      } else {
+        return; // Skip if we can't parse the date
       }
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const monthName = date.toLocaleDateString('es-ES', { month: 'long' });
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = {
+          month: monthName,
+          deltas: [],
+          count: 0
+        };
+      }
+      monthlyData[monthKey].deltas.push(cuotaparte.delta);
+      monthlyData[monthKey].count++;
     });
-
     // Calculate average delta for each month and sort by date
     const sortedMonths = Object.keys(monthlyData)
       .sort()
       .slice(-9); // Get last 9 months
-
     return sortedMonths.map(monthKey => {
       const monthData = monthlyData[monthKey];
       const avgDelta = monthData.deltas.reduce((sum, delta) => sum + delta, 0) / monthData.count;

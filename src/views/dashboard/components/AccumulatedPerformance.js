@@ -6,7 +6,6 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-// Custom components
 import Card from "components/card/Card.js";
 import LineChart from "components/charts/LineChart";
 import React from "react";
@@ -14,86 +13,88 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { useUserTransactions } from "hooks/useUserTransactions";
 import { useCuotaparteData } from "hooks/useCuotaparteData";
 
-// MOCK profits por mes - keeping for potential future use
-// eslint-disable-next-line no-unused-vars
-const profitsData = [99.15, 127.03, 117.74, 154.92, 145.63, 164.40, 185.91, 217.88, 247.87, 278.86];
-// eslint-disable-next-line no-unused-vars
-const profitsMonths = ["Sep", "Oct", "Nov", "Dic", "Ene", "Feb", "Mar", "Abr", "May"];
-
-
-
 export default function AccumulatedPerformance(props) {
   const { ...rest } = props;
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const { transactions } = useUserTransactions();
-  const { cuotapartes } = useCuotaparteData();
+  const { cuotasMensualesCierre } = useCuotaparteData();
 
-  console.log('cuotapartes', cuotapartes);
+  console.log('=== ACCUMULATED PERFORMANCE DEBUG ===');
+  console.log('transactions:', transactions);
+  console.log('cuotapartes:', cuotasMensualesCierre);
+  console.log('transactions length:', transactions?.length);
+  console.log('cuotapartes length:', cuotasMensualesCierre?.length);
 
-  // 1. Encontrar el primer mes de ingreso del usuario
+  // 1. Encontrar la fecha de la primera transferencia
   const firstIngresoDate = React.useMemo(() => {
     const ingresos = transactions.filter(t => t.movimiento === 'Ingreso' && t.fecha);
+    console.log('ingresos filtrados:', ingresos);
     if (ingresos.length === 0) return null;
-    // fecha puede ser string o Date
     const fechas = ingresos.map(t => new Date(t.fecha));
-    return new Date(Math.min(...fechas.map(f => f.getTime())));
+    console.log('fechas parseadas:', fechas);
+    const minDate = new Date(Math.min(...fechas.map(f => f.getTime())));
+    console.log('primera fecha de ingreso:', minDate);
+    return minDate;
   }, [transactions]);
 
-  // 2. Filtrar cuotapartes desde ese punto de partida (ascendente por fecha, solo con delta válido)
-  const filteredCuotas = React.useMemo(() => {
-    if (!firstIngresoDate || !cuotapartes || cuotapartes.length === 0) return [];
-    return cuotapartes
-      .map(item => ({
-        ...item,
-        fechaObj: new Date(item.fecha)
-      }))
-      .filter(item => item.fechaObj >= firstIngresoDate && typeof item.delta === 'number' && isFinite(item.delta) && Math.abs(item.delta) <= 100)
-      .sort((a, b) => a.fechaObj - b.fechaObj);
-  }, [cuotapartes, firstIngresoDate]);
-
-  // 3. Calcular el rendimiento acumulado usando los delta
+  // 2. Procesar datos y calcular acumulado
   const { months, accumulatedReturns } = React.useMemo(() => {
-    if (!filteredCuotas || filteredCuotas.length === 0) return { months: ["Inicio"], accumulatedReturns: [0] };
+    console.log('=== CALCULANDO ACUMULADO CON cuotasMensualesCierre ===');
+    if (!firstIngresoDate || !cuotasMensualesCierre || cuotasMensualesCierre.length === 0) {
+      return { months: ["Inicio"], accumulatedReturns: [0] };
+    }
     let acc = 1;
     const months = [];
     const accumulatedReturns = [];
-    filteredCuotas.forEach((item, i) => {
-      const label = item.fechaObj.toLocaleString('default', { month: 'short', year: '2-digit' });
-      months.push(label);
-      if (i === 0) {
-        accumulatedReturns.push(0);
+    const meses = {
+      'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+      'jul': 6, 'ago': 7, 'sept': 8, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+    };
+    cuotasMensualesCierre.forEach((c, i) => {
+      let fechaObj;
+      if (c.fechaOriginal && c.fechaOriginal.toDate) {
+        fechaObj = c.fechaOriginal.toDate();
+      } else if (typeof c.fecha === 'string') {
+        // Parsear string tipo '31 mar 2024'
+        const [dia, mesStr, anio] = c.fecha.split(' ');
+        const mes = meses[mesStr.toLowerCase()];
+        fechaObj = new Date(anio, mes, dia);
       } else {
-        // Si el delta es mayor a 1, asumimos que está en porcentaje y lo pasamos a decimal
-        let delta = item.delta;
-        if (Math.abs(delta) > 1) delta = delta / 100;
-        acc *= (1 + delta);
-        let pct = (acc - 1) * 100;
-        // Limitar a 1000% para evitar outliers visuales
-        if (pct > 1000) pct = 1000;
-        if (pct < -100) pct = -100;
-        accumulatedReturns.push(Number(pct.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })));
+        fechaObj = new Date(c.fecha);
       }
+      const label = fechaObj.toLocaleString('default', { month: 'short' }).toUpperCase();
+      let delta = c.delta;
+      if (typeof delta === 'number' && isFinite(delta)) {
+        // Los deltas ya vienen como porcentajes completos (ej: 0.44 = 0.44%)
+        // Convertir a decimal dividiendo por 100
+        delta = delta / 100;
+      } else {
+        delta = 0;
+      }
+      acc *= (1 + delta);
+      const pct = Math.max(Math.min((acc - 1) * 100, 1000), -100);
+      months.push(label);
+      accumulatedReturns.push(Number(pct.toFixed(2)));
+      console.log(`Mes ${label}: delta=${c.delta}, procesado=${delta}, acumulado=${pct}`);
     });
     return { months, accumulatedReturns };
-  }, [filteredCuotas]);
+  }, [cuotasMensualesCierre, firstIngresoDate]);
 
-  // 4. Preparar datos para el gráfico
-  // DEBUG: log para ver los datos
-  console.log('months', months);
-  console.log('accumulatedReturns', accumulatedReturns);
+  // Preparar datos para el gráfico
+  const chartMonths = months;
+  const chartReturns = accumulatedReturns;
 
-  // Si hay menos de dos puntos, forzar dos puntos de ejemplo para que se vea la línea y el eje X
-  let chartMonths = months;
-  let chartReturns = accumulatedReturns;
-  if (months.length < 2) {
-    chartMonths = ["Inicio", "Actual"];
-    chartReturns = [0, accumulatedReturns[0] ?? 0];
-  }
+  console.log('datos finales para el gráfico:');
+  console.log('chartMonths:', chartMonths);
+  console.log('chartReturns:', chartReturns);
+   // Calcular min y max dinámicos para el eje Y
+   const minY = Math.min(...chartReturns, 0);
+   const maxY = Math.max(...chartReturns, 2);
 
   const lineChartData = [
     {
       name: "Rendimiento Acumulado",
-      data: chartReturns.map(v => Number(v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))),
+      data: chartReturns,
     },
   ];
   const lineChartOptions = {
@@ -116,12 +117,19 @@ export default function AccumulatedPerformance(props) {
       height: 300,
     },
     colors: ["#22c55e"],
+    markers: {
+      size: 4,
+    },
     xaxis: {
       categories: chartMonths,
       labels: {
+        rotate: -30,
+        rotateAlways: true,
+        showDuplicates: true,
+        trim: true,
         style: {
           colors: "#A3AED0",
-          fontSize: "14px",
+          fontSize: "12px",
           fontWeight: "500",
         },
       },
@@ -129,15 +137,19 @@ export default function AccumulatedPerformance(props) {
       axisTicks: { show: true },
     },
     yaxis: {
+      min: minY,
+      max: maxY,
       labels: {
         style: {
           colors: "#A3AED0",
-          fontSize: "14px",
+          fontSize: "12px",
           fontWeight: "500",
         },
-        formatter: val => `${val.toFixed(2)}%`,
+        formatter: val => `${val.toLocaleString('es-AR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}%`,
       },
-      min: 0,
     },
     grid: {
       borderColor: "rgba(163, 174, 208, 0.3)",
@@ -153,13 +165,7 @@ export default function AccumulatedPerformance(props) {
   };
 
   return (
-    <Card
-      justifyContent='center'
-      align='left'
-      direction='column'
-      w='100%'
-      mb='0px'
-      {...rest}>
+    <Card justifyContent='center' align='left' direction='column' w='100%' mb='0px' {...rest}>
       <Text color={textColor} fontSize='xl' fontWeight='700' mb='4'>
         Rendimiento Acumulado
       </Text>
@@ -171,15 +177,12 @@ export default function AccumulatedPerformance(props) {
             textAlign='start'
             fontWeight='700'
             lineHeight='100%'>
-            {accumulatedReturns.length > 0 ? `${accumulatedReturns[accumulatedReturns.length - 1].toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%` : '--'}
+            {accumulatedReturns.length > 0
+              ? `${accumulatedReturns[accumulatedReturns.length - 1].toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+              : '--'}
           </Text>
           <Flex align='center' mb='20px'>
-            <Text
-              color='secondaryGray.600'
-              fontSize='sm'
-              fontWeight='500'
-              mt='4px'
-              me='12px'>
+            <Text color='secondaryGray.600' fontSize='sm' fontWeight='500' mt='4px' me='12px'>
               Rendimiento
             </Text>
           </Flex>
@@ -190,7 +193,7 @@ export default function AccumulatedPerformance(props) {
             </Text>
           </Flex>
         </Flex>
-        <Box minH='260px' minW='75%' mt='auto'>
+        <Box minH='300px' w='100%' overflowX='auto' mt='auto'>
           <LineChart
             chartData={lineChartData}
             chartOptions={lineChartOptions}
@@ -199,4 +202,4 @@ export default function AccumulatedPerformance(props) {
       </Flex>
     </Card>
   );
-} 
+}
