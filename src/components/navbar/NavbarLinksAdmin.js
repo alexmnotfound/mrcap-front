@@ -18,9 +18,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from "contexts/AuthContext";
 // Assets
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
+import { SidebarResponsive } from 'components/sidebar/Sidebar';
 
 export default function HeaderLinks(props) {
-  const { secondary } = props;
+  const { secondary, routes } = props;
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
   const { logout, currentUser } = useAuth();
@@ -43,7 +44,10 @@ export default function HeaderLinks(props) {
       p="10px"
       borderRadius="30px"
       boxShadow={shadow}
+      justifyContent={{ sm: 'flex-end', md: 'flex-start' }}
     >
+      {/* Botón hamburguesa para móviles */}
+      <SidebarResponsive routes={routes} />
       <Button
         variant="no-hover"
         bg="transparent"
@@ -130,4 +134,5 @@ HeaderLinks.propTypes = {
   fixed: PropTypes.bool,
   secondary: PropTypes.bool,
   onOpen: PropTypes.func,
+  routes: PropTypes.array,
 };
