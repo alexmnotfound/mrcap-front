@@ -62,7 +62,6 @@ exports.cleanupLoginAttempts = functions.pubsub.schedule('every 24 hours').onRun
   });
   
   await batch.commit();
-  console.log(`Eliminados ${snapshot.size} intentos de login antiguos`);
 });
 
 // Función para obtener estadísticas de seguridad (solo admins)

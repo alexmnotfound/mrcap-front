@@ -26,23 +26,7 @@ export function CuotaparteProvider({ children }) {
       const cuotapartesRef = collection(db, "FCI", "Riesgo Alto", "cuotapartes");
       const q = query(cuotapartesRef, orderBy("fecha", "desc"), limit(50));
       const querySnapshot = await getDocs(q);
-      
-      console.log('=== DATOS CRUDOS DE FIREBASE ===');
-      querySnapshot.docs.forEach((doc, index) => {
-        const data = doc.data();
-        console.log(`Documento ${index + 1}:`, {
-          id: doc.id,
-          fecha: data.fecha,
-          fechaTipo: typeof data.fecha,
-          tieneToDate: data.fecha?.toDate ? 'SÍ' : 'NO',
-          valor: data.valor,
-          delta: data.delta,
-          patrimonioTotal: data.patrimonioTotal
-        });
-      });
-      
-      console.log(`Total documentos de Firebase: ${querySnapshot.docs.length}`);
-      
+            
       const cuotapartesData = querySnapshot.docs.map(doc => {
         const data = doc.data();
         // Formatear fecha
@@ -101,13 +85,6 @@ export function CuotaparteProvider({ children }) {
           comentarios: data.comentarios || ''
         };
       });
-      
-      console.log(`Total documentos procesados: ${cuotapartesData.length}`);
-      console.log('Documentos procesados:', cuotapartesData.map(item => ({
-        id: item.id,
-        fecha: item.fecha,
-        delta: item.delta
-      })));
       
       setCuotapartes(cuotapartesData);
       setLastFetch(Date.now());

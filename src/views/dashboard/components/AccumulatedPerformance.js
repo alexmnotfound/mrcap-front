@@ -19,27 +19,17 @@ export default function AccumulatedPerformance(props) {
   const { transactions } = useUserTransactions();
   const { cuotasMensualesCierre } = useCuotaparteData();
 
-  console.log('=== ACCUMULATED PERFORMANCE DEBUG ===');
-  console.log('transactions:', transactions);
-  console.log('cuotapartes:', cuotasMensualesCierre);
-  console.log('transactions length:', transactions?.length);
-  console.log('cuotapartes length:', cuotasMensualesCierre?.length);
-
   // 1. Encontrar la fecha de la primera transferencia
   const firstIngresoDate = React.useMemo(() => {
     const ingresos = transactions.filter(t => t.movimiento === 'Ingreso' && t.fecha);
-    console.log('ingresos filtrados:', ingresos);
     if (ingresos.length === 0) return null;
     const fechas = ingresos.map(t => new Date(t.fecha));
-    console.log('fechas parseadas:', fechas);
     const minDate = new Date(Math.min(...fechas.map(f => f.getTime())));
-    console.log('primera fecha de ingreso:', minDate);
     return minDate;
   }, [transactions]);
 
   // 2. Procesar datos y calcular acumulado
   const { months, accumulatedReturns } = React.useMemo(() => {
-    console.log('=== CALCULANDO ACUMULADO CON cuotasMensualesCierre ===');
     if (!firstIngresoDate || !cuotasMensualesCierre || cuotasMensualesCierre.length === 0) {
       return { months: ["Inicio"], accumulatedReturns: [0] };
     }
@@ -75,7 +65,6 @@ export default function AccumulatedPerformance(props) {
       const pct = Math.max(Math.min((acc - 1) * 100, 1000), -100);
       months.push(label);
       accumulatedReturns.push(Number(pct.toFixed(2)));
-      console.log(`Mes ${label}: delta=${c.delta}, procesado=${delta}, acumulado=${pct}`);
     });
     return { months, accumulatedReturns };
   }, [cuotasMensualesCierre, firstIngresoDate]);
@@ -84,9 +73,6 @@ export default function AccumulatedPerformance(props) {
   const chartMonths = months;
   const chartReturns = accumulatedReturns;
 
-  console.log('datos finales para el gráfico:');
-  console.log('chartMonths:', chartMonths);
-  console.log('chartReturns:', chartReturns);
    // Calcular min y max dinámicos para el eje Y
    const minY = Math.min(...chartReturns, 0);
    const maxY = Math.max(...chartReturns, 2);
