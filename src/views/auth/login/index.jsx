@@ -24,15 +24,35 @@ import { HSeparator } from "components/separator/Separator";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 import { useAuth } from "contexts/AuthContext";
+import { validateLoginForm } from "utils/validation";
 
 function getFirebaseErrorMessage(error) {
   if (!error) return null;
+  
+  // Mensajes genéricos que no exponen información del sistema
   if (typeof error !== "string") return "Ocurrió un error inesperado.";
-  if (error.includes("auth/invalid-credential")) return "Email o contraseña incorrectos.";
-  if (error.includes("auth/user-not-found")) return "Usuario no encontrado.";
-  if (error.includes("auth/wrong-password")) return "Contraseña incorrecta.";
-  if (error.includes("auth/too-many-requests")) return "Demasiados intentos. Intenta más tarde.";
-  return "Error: " + error;
+  
+  // Solo mostrar mensajes específicos para errores de usuario
+  if (error.includes("auth/invalid-credential") || 
+      error.includes("auth/user-not-found") || 
+      error.includes("auth/wrong-password")) {
+    return "Email o contraseña incorrectos.";
+  }
+  
+  if (error.includes("auth/too-many-requests")) {
+    return "Demasiados intentos. Intenta más tarde.";
+  }
+  
+  if (error.includes("auth/user-disabled")) {
+    return "Tu cuenta ha sido deshabilitada. Contacta al administrador.";
+  }
+  
+  if (error.includes("auth/network-request-failed")) {
+    return "Error de conexión. Verifica tu internet.";
+  }
+  
+  // Para cualquier otro error, mostrar mensaje genérico
+  return "Error de autenticación. Intenta de nuevo.";
 }
 
 function SignIn() {
@@ -72,6 +92,14 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    
+    // Validar formulario antes de enviar
+    const validation = validateLoginForm(email, password);
+    if (!validation.isValid) {
+      setError(validation.message);
+      return;
+    }
+    
     setLoading(true);
     const result = await login(email, password);
     setLoading(false);
