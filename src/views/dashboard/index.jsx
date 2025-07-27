@@ -156,12 +156,6 @@ export default function UserReports() {
         columns={{ base: 1, md: 2, lg: 3, "2xl": 6 }}
         gap='20px'
         mb='20px'>
-        <MiniStatistics 
-          growth={`${monthlyTrend >= 0 ? '+' : ''}${monthlyTrend.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`} 
-          name='Ganancias' 
-          value={`$${profitsAfterCommission.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} 
-        />
-        <MiniStatistics name='Total Invertido' value={`$${totalInvested.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} />
         <MiniStatistics
           endContent={
             <Flex me='-16px' mt='10px'>
@@ -181,6 +175,12 @@ export default function UserReports() {
           name='Balance'
           value={`$${netBalance.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
         />
+        <MiniStatistics 
+          growth={`${monthlyTrend >= 0 ? '+' : ''}${monthlyTrend.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`} 
+          name='Ganancias' 
+          value={`$${profitsAfterCommission.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} 
+        />
+        <MiniStatistics name='Total Invertido' value={`$${totalInvested.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} />
         <MiniStatistics
           startContent={
             <IconBox
