@@ -104,6 +104,7 @@ export default function Dashboard(props) {
           else return null;
         } else if (window.location.pathname.startsWith('/admin')) {
           if (route.path === '/admin/data-tables') path = 'data-tables';
+          else if (route.path === '/admin/cc') path = 'cc';
           else return null;
         }
         return (

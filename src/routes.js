@@ -6,6 +6,7 @@ import {
   MdPerson,
   MdHome,
   MdLock,
+  MdAccountBalance,
 } from 'react-icons/md';
 
 // Dashboard & Profile Imports (for all users)
@@ -14,6 +15,7 @@ import Profile from 'views/profile';
 
 // Admin Imports (admin only)
 import DataTables from 'views/admin/dataTables';
+import CuentasCorrientes from 'views/admin/cuentasCorrientes';
 
 // Auth Imports
 import SignInCentered from 'views/auth/login';
@@ -38,6 +40,13 @@ const routes = [
     path: '/admin/data-tables',
     icon: <Icon as={MdBarChart} width="20px" height="20px" color="inherit" />,
     component: <DataTables />,
+    roles: ['admin'],
+  },
+  {
+    name: 'Cuentas Corrientes',
+    path: '/admin/cc',
+    icon: <Icon as={MdAccountBalance} width="20px" height="20px" color="inherit" />,
+    component: <CuentasCorrientes />,
     roles: ['admin'],
   },
   {

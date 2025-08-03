@@ -96,3 +96,35 @@ export const columnsDataCuotapartes = [
     accessor: "comentarios",
   },
 ];
+
+// Columnas para la tabla de movimientos de admin (todos los usuarios)
+export const columnsDataMovements = [
+  {
+    Header: "USUARIO",
+    accessor: "usuario",
+  },
+  {
+    Header: "EMAIL",
+    accessor: "email",
+  },
+  {
+    Header: "MOVIMIENTO",
+    accessor: "movimiento",
+  },
+  {
+    Header: "FECHA",
+    accessor: "fecha",
+  },
+  {
+    Header: "MONTO USD",
+    accessor: "montoUSD",
+  },
+  {
+    Header: "CUOTAPARTES",
+    accessor: "cuotapartes",
+  },
+  {
+    Header: "PRECIO CUOTA",
+    accessor: "precioCuota",
+  },
+];
