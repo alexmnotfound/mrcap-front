@@ -195,7 +195,7 @@ export default function MovementsTable(props) {
   return (
     <Card p="20px">
       <Text fontSize="lg" fontWeight="700" mb="20px">
-        Movimientos de Todos los Usuarios
+        Detalles por Inversor
       </Text>
       <Box overflowX="auto">
         <Table variant="simple" color="gray.500" mb="24px">
