@@ -140,7 +140,7 @@ export const columnsDataUserMovements = [
     accessor: "fecha",
   },
   {
-    Header: "MONTO USD",
+    Header: "$ MONTO USD",
     accessor: "montoUSD",
   },
   {
@@ -148,11 +148,11 @@ export const columnsDataUserMovements = [
     accessor: "cuotapartes",
   },
   {
-    Header: "PRECIO CUOTA",
+    Header: "$ PRECIO CUOTA",
     accessor: "precioCuota",
   },
   {
-    Header: "P&L",
+    Header: "$ P&L",
     accessor: "pyl",
   },
 ];

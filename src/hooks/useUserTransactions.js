@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "contexts/AuthContext";
+import { useCuotaparteData } from "hooks/useCuotaparteData";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
 export function useUserTransactions() {
   const { currentUser } = useAuth();
+  const { currentValorCuota } = useCuotaparteData();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,14 +48,22 @@ export function useUserTransactions() {
             }
           }
           
+          const montoUSD = Number(data.montoUSD) || 0;
+          const cuotapartes = Number(data.cuotapartes) || 0;
+          const precioCuota = Number(data.precioCuota) || 0;
+          
+          // Calcular P&L: (cuotapartes * valor actual cuota) - monto invertido
+          const valorActual = cuotapartes * currentValorCuota;
+          const pyl = valorActual - montoUSD;
+          
           return {
             id: doc.id,
             movimiento: data.tipo || "N/A",
             fecha: fechaFormateada,
-            montoUSD: Number(data.montoUSD) || 0,
-            cuotapartes: Number(data.cuotapartes) || 0,
-            precioCuota: Number(data.precioCuota) || 0,
-            pyl: Number(data.pl) || 0
+            montoUSD: montoUSD,
+            cuotapartes: cuotapartes,
+            precioCuota: precioCuota,
+            pyl: pyl
           };
         });
         
@@ -78,7 +88,7 @@ export function useUserTransactions() {
     return () => {
       isMounted = false;
     };
-  }, [currentUser?.uid, currentUser?.displayName]);
+  }, [currentUser?.uid, currentUser?.displayName, currentValorCuota]);
 
   return { transactions, loading };
 } 

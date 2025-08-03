@@ -25,8 +25,7 @@ import PieCard from "views/dashboard/components/PieCard";
 import MonthlyRevenue from "views/dashboard/components/MonthlyRevenue";
 import InvestmentSummary from "views/dashboard/components/InvestmentSummary";
 import AccumulatedPerformance from "views/dashboard/components/AccumulatedPerformance";
-import ColumnsTable from "views/admin/dataTables/components/ColumnsTable";
-import { columnsDataUserMovements } from "views/admin/dataTables/variables/columnsData";
+import UserTransactionsTable from "views/dashboard/components/UserTransactionsTable";
 import UserImpersonation from "views/dashboard/components/UserImpersonation";
 import { useCuotaparteData } from "hooks/useCuotaparteData";
 import { useUserTransactions } from "hooks/useUserTransactions";
@@ -49,10 +48,10 @@ export default function UserReports() {
   const formattedTransactions = useMemo(() => {
     return transactions.map(transaction => ({
       ...transaction,
-      montoUSD: `$${transaction.montoUSD.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      montoUSD: transaction.montoUSD.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       cuotapartes: transaction.cuotapartes.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-      precioCuota: `$${transaction.precioCuota.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      pyl: `$${transaction.pyl.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      precioCuota: transaction.precioCuota.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      pyl: transaction.pyl.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
     }));
   }, [transactions]);
 
@@ -190,7 +189,7 @@ export default function UserReports() {
             />
           </Center>
         ) : (
-          <ColumnsTable columnsData={columnsDataUserMovements} tableData={formattedTransactions} />
+          <UserTransactionsTable transactions={formattedTransactions} originalTransactions={transactions} />
         )}
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
           <PieCard />
