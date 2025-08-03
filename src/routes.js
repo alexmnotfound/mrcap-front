@@ -36,7 +36,7 @@ const routes = [
     roles: ['admin', 'user'],
   },
   {
-    name: 'Data',
+    name: 'Fondo',
     path: '/admin/data-tables',
     icon: <Icon as={MdBarChart} width="20px" height="20px" color="inherit" />,
     component: <DataTables />,
