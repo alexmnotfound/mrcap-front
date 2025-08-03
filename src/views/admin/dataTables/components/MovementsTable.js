@@ -45,29 +45,11 @@ export default function MovementsTable(props) {
           fontSize={{ sm: '10px', lg: '12px' }}
           color="gray.400"
         >
-          USUARIO
+          INVERSOR
         </Text>
       ),
       cell: (info) => (
         <Text color={textColor} fontSize="sm" fontWeight="700">
-          {info.getValue()}
-        </Text>
-      ),
-    }),
-    columnHelper.accessor('email', {
-      id: 'email',
-      header: () => (
-        <Text
-          justifyContent="space-between"
-          align="center"
-          fontSize={{ sm: '10px', lg: '12px' }}
-          color="gray.400"
-        >
-          EMAIL
-        </Text>
-      ),
-      cell: (info) => (
-        <Text color={textColor} fontSize="sm" fontWeight="500">
           {info.getValue()}
         </Text>
       ),
@@ -107,6 +89,11 @@ export default function MovementsTable(props) {
           {info.getValue()}
         </Text>
       ),
+      sortingFn: (rowA, rowB, columnId) => {
+        const fechaA = rowA.original.fechaOriginal || new Date(rowA.getValue(columnId));
+        const fechaB = rowB.original.fechaOriginal || new Date(rowB.getValue(columnId));
+        return fechaA - fechaB;
+      },
     }),
     columnHelper.accessor('montoUSD', {
       id: 'montoUSD',
@@ -195,7 +182,7 @@ export default function MovementsTable(props) {
   return (
     <Card p="20px">
       <Text fontSize="lg" fontWeight="700" mb="20px">
-        Detalles por Inversor
+        Movimientos por Inversor
       </Text>
       <Box overflowX="auto">
         <Table variant="simple" color="gray.500" mb="24px">
