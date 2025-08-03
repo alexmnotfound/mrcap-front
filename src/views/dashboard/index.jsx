@@ -15,7 +15,7 @@ import Usa from "assets/img/dashboards/usa.png";
 // Custom components
 import MiniStatistics from "components/card/MiniStatistics";
 import IconBox from "components/icons/IconBox";
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import {
   MdAttachMoney,
   MdBarChart,
@@ -26,21 +26,15 @@ import MonthlyRevenue from "views/dashboard/components/MonthlyRevenue";
 import InvestmentSummary from "views/dashboard/components/InvestmentSummary";
 import AccumulatedPerformance from "views/dashboard/components/AccumulatedPerformance";
 import ColumnsTable from "views/admin/dataTables/components/ColumnsTable";
-import { columnsDataColumns } from "views/admin/dataTables/variables/columnsData";
+import { columnsDataUserMovements } from "views/admin/dataTables/variables/columnsData";
 import UserImpersonation from "views/dashboard/components/UserImpersonation";
-import { useAuth } from "contexts/AuthContext";
 import { useCuotaparteData } from "hooks/useCuotaparteData";
 import { useUserTransactions } from "hooks/useUserTransactions";
-import { collection, query, orderBy, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
 
 export default function UserReports() {
   // Chakra Color Mode
   const brandColor = useColorModeValue("brand.500", "white");
   const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
-  const { currentUser } = useAuth();
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
   
   // Use cuotaparte data from context
   const { 
@@ -49,63 +43,18 @@ export default function UserReports() {
     monthlyTrend,
     loading: loadingCuotaparte
   } = useCuotaparteData();
-  const { loading: loadingTransacciones } = useUserTransactions();
+  const { transactions, loading: loadingTransacciones } = useUserTransactions();
 
-  // Leer transacciones de Firestore
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      if (!currentUser?.uid) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const transactionsRef = collection(db, "usuarios", currentUser.uid, "transacciones");
-        const q = query(transactionsRef, orderBy("fecha", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        const transactionsData = querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          
-          // Formatear fecha
-          let fechaFormateada = "N/A";
-          if (data.fecha) {
-            if (data.fecha.toDate) {
-              // Es un Firestore Timestamp
-              const date = data.fecha.toDate();
-              fechaFormateada = date.toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-              });
-            } else if (typeof data.fecha === 'string') {
-              // Ya es un string
-              fechaFormateada = data.fecha;
-            }
-          }
-          
-          return {
-            id: doc.id,
-            movimiento: data.tipo || "N/A",
-            fecha: fechaFormateada,
-            montoUSD: Number(data.montoUSD) || 0,
-            cuotapartes: Number(data.cuotapartes) || 0,
-            precioCuota: Number(data.precioCuota) || 0,
-            pyl: Number(data.pl) || 0
-          };
-        });
-        
-        setTransactions(transactionsData);
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-        setTransactions([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTransactions();
-  }, [currentUser?.uid]);
+  // Formatear transacciones para la tabla
+  const formattedTransactions = useMemo(() => {
+    return transactions.map(transaction => ({
+      ...transaction,
+      montoUSD: `$${transaction.montoUSD.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      cuotapartes: transaction.cuotapartes.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      precioCuota: `$${transaction.precioCuota.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      pyl: `$${transaction.pyl.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    }));
+  }, [transactions]);
 
   // Calculate user's cuotapartes from transactions (ingresos - egresos)
   const userCuotapartes = transactions.reduce((sum, transaction) => {
@@ -135,7 +84,7 @@ export default function UserReports() {
   // Calculate net balance (value after commission)
   const netBalance = currentBalance - commission;
 
-  if (loading || loadingCuotaparte || loadingTransacciones) {
+  if (loadingCuotaparte || loadingTransacciones) {
     return (
       <Center h="400px">
         <Spinner
@@ -230,7 +179,7 @@ export default function UserReports() {
         <MonthlyRevenue />
       </SimpleGrid>
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
-        {loading ? (
+        {loadingTransacciones ? (
           <Center h="200px">
             <Spinner
               thickness="4px"
@@ -241,7 +190,7 @@ export default function UserReports() {
             />
           </Center>
         ) : (
-          <ColumnsTable columnsData={columnsDataColumns} tableData={transactions} />
+          <ColumnsTable columnsData={columnsDataUserMovements} tableData={formattedTransactions} />
         )}
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
           <PieCard />

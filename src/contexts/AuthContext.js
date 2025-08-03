@@ -122,6 +122,7 @@ export function AuthProvider({ children }) {
         ...userData,
       };
 
+      console.log('Impersonating user:', impersonatedUserData.displayName, impersonatedUserData.uid);
       setImpersonatedUser(impersonatedUserData);
       setCurrentUser(impersonatedUserData);
       
@@ -133,6 +134,7 @@ export function AuthProvider({ children }) {
 
   // Stop impersonating
   const stopImpersonate = () => {
+    console.log('Stopping impersonation, returning to:', realUser?.displayName, realUser?.uid);
     setImpersonatedUser(null);
     setCurrentUser(realUser);
   };

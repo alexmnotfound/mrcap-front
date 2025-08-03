@@ -128,3 +128,31 @@ export const columnsDataMovements = [
     accessor: "precioCuota",
   },
 ];
+
+// Columnas para la tabla de movimientos del usuario (dashboard)
+export const columnsDataUserMovements = [
+  {
+    Header: "MOV.",
+    accessor: "movimiento",
+  },
+  {
+    Header: "FECHA",
+    accessor: "fecha",
+  },
+  {
+    Header: "MONTO USD",
+    accessor: "montoUSD",
+  },
+  {
+    Header: "CUOTAPARTES",
+    accessor: "cuotapartes",
+  },
+  {
+    Header: "PRECIO CUOTA",
+    accessor: "precioCuota",
+  },
+  {
+    Header: "P&L",
+    accessor: "pyl",
+  },
+];
