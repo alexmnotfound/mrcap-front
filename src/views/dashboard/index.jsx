@@ -27,7 +27,7 @@ import InvestmentSummary from "views/dashboard/components/InvestmentSummary";
 import AccumulatedPerformance from "views/dashboard/components/AccumulatedPerformance";
 import ColumnsTable from "views/admin/dataTables/components/ColumnsTable";
 import { columnsDataColumns } from "views/admin/dataTables/variables/columnsData";
-import ImpersonateTest from "views/dashboard/components/ImpersonateTest";
+import UserImpersonation from "views/dashboard/components/UserImpersonation";
 import { useAuth } from "contexts/AuthContext";
 import { useCuotaparteData } from "hooks/useCuotaparteData";
 import { useUserTransactions } from "hooks/useUserTransactions";
@@ -151,7 +151,7 @@ export default function UserReports() {
 
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
-      {currentUser?.role === "admin" && <ImpersonateTest />}
+      <UserImpersonation />
       <SimpleGrid
         columns={{ base: 1, md: 2, lg: 3, "2xl": 6 }}
         gap='20px'

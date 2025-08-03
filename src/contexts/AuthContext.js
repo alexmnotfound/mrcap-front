@@ -18,6 +18,8 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
+  const [realUser, setRealUser] = useState(null);
+  const [impersonatedUser, setImpersonatedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -28,20 +30,28 @@ export function AuthProvider({ children }) {
         // Optionally fetch extra profile data from Firestore
         const userDoc = await getDoc(doc(db, "usuarios", user.uid));
         const docData = userDoc.exists() ? userDoc.data() : {};
-        setCurrentUser({
+        const userData = {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
           role: docData.role || "user",
           ...docData,
-        });
+        };
+        
+        setRealUser(userData);
+        // Si no hay usuario impersonado, usar el usuario real
+        if (!impersonatedUser) {
+          setCurrentUser(userData);
+        }
       } else {
         setCurrentUser(null);
+        setRealUser(null);
+        setImpersonatedUser(null);
       }
       setLoading(false);
     });
     return () => unsubscribe();
-  }, []);
+  }, [impersonatedUser]);
 
   // Login with email and password
   const login = async (email, password) => {
@@ -89,8 +99,58 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Impersonate user
+  const impersonate = async (userId) => {
+    try {
+      // Solo permitir impersonación si el usuario real es admin
+      if (realUser?.role !== 'admin') {
+        throw new Error('Solo los administradores pueden impersonar usuarios');
+      }
+
+      // Obtener datos del usuario a impersonar
+      const userDoc = await getDoc(doc(db, "usuarios", userId));
+      if (!userDoc.exists()) {
+        throw new Error('Usuario no encontrado');
+      }
+
+      const userData = userDoc.data();
+      const impersonatedUserData = {
+        uid: userId,
+        email: userData.email,
+        displayName: userData.displayName,
+        role: userData.role || "user",
+        ...userData,
+      };
+
+      setImpersonatedUser(impersonatedUserData);
+      setCurrentUser(impersonatedUserData);
+      
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  };
+
+  // Stop impersonating
+  const stopImpersonate = () => {
+    setImpersonatedUser(null);
+    setCurrentUser(realUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout, register, loginWithGoogle, loading }}>
+    <AuthContext.Provider value={{ 
+      currentUser, 
+      realUser, 
+      impersonatedUser, 
+      isImpersonating: !!impersonatedUser,
+      login, 
+      logout, 
+      register, 
+      loginWithGoogle, 
+      impersonate,
+      stopImpersonate,
+      loading 
+    }}>
       {loading ? (
         <Center h="100vh" w="100vw" bg="#f7fafd">
           <img
