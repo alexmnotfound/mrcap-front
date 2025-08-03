@@ -1,6 +1,7 @@
 // Chakra imports
 import { Box, SimpleGrid, Button, Flex, Text } from "@chakra-ui/react";
 import MovementsTable from "views/admin/dataTables/components/MovementsTable";
+import UserTotalsTable from "./components/UserTotalsTable";
 import React from "react";
 import { useAllUserTransactions } from "hooks/useAllUserTransactions";
 import { Icon } from "@chakra-ui/react";
@@ -26,6 +27,9 @@ export default function CuentasCorrientes() {
           Actualizar Datos
         </Button>
       </Flex>
+      
+      {/* Tabla de totales por usuario */}
+      <UserTotalsTable transactions={transactions} />
       
       <SimpleGrid
         mb='20px'
