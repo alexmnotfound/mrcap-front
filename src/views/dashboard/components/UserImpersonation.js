@@ -6,7 +6,6 @@ import {
   Text, 
   Select, 
   Flex, 
-  Badge, 
   useToast,
   Card,
   CardBody,

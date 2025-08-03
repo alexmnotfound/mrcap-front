@@ -44,6 +44,7 @@ export default function FondoDashboard() {
     monthlyTrend,
     totalPatrimonio,
     cuotapartes,
+    averageAnnualReturn,
     loading: loadingCuotaparte
   } = useCuotaparteData();
   
@@ -117,7 +118,7 @@ export default function FondoDashboard() {
       </Text>
       
       <SimpleGrid
-        columns={{ base: 1, md: 2, lg: 3, "2xl": 6 }}
+        columns={{ base: 1, md: 2, lg: 3, "2xl": 7 }}
         gap='20px'
         mb='20px'>
         <MiniStatistics
@@ -189,6 +190,20 @@ export default function FondoDashboard() {
           }
           name='Total Inversores'
           value={fondoMetrics.totalInversores.toString()}
+        />
+        <MiniStatistics
+          startContent={
+            <IconBox
+              w='56px'
+              h='56px'
+              bg={boxBg}
+              icon={
+                <Icon w='32px' h='32px' as={MdBarChart} color={brandColor} />
+              }
+            />
+          }
+          name='Promedio Mensual (12 meses)'
+          value={`${averageAnnualReturn.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`}
         />
       </SimpleGrid>
 
